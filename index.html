@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday, Tyrese!</title>
+    <style>
+        :root {
+            --rose: #ff4d6d;
+            --rose-deep: #b3003b;
+            --cream: #fff7f3;
+            --gold: #ffd166;
+            --ink: #18040d;
+            --mist: #ffeef2;
+            --shadow: rgba(0, 0, 0, 0.34);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            font-family: "Georgia", "Times New Roman", serif;
+            color: var(--cream);
+            background:
+                radial-gradient(circle at 15% 15%, rgba(255, 77, 109, 0.36), transparent 20%),
+                radial-gradient(circle at 85% 5%, rgba(255, 209, 102, 0.24), transparent 24%),
+                radial-gradient(circle at 50% 100%, rgba(255, 77, 109, 0.22), transparent 28%),
+                linear-gradient(135deg, #050102 0%, #15030b 45%, #2a020d 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: absolute;
+            inset: -20%;
+            background-image:
+                radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255,255,255,0.28) 1px, transparent 1px);
+            background-size: 110px 110px, 180px 180px;
+            background-position: 0 0, 40px 80px;
+            animation: drift 22s linear infinite;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+
+        body::after {
+            animation-duration: 32s;
+            opacity: 0.12;
+        }
+
+        .scene {
+            position: relative;
+            width: min(92vw, 960px);
+            min-height: 720px;
+            display: grid;
+            place-items: center;
+            perspective: 1400px;
+        }
+
+        .halo {
+            position: absolute;
+            width: 560px;
+            height: 560px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 77, 109, 0.22), transparent 62%);
+            filter: blur(28px);
+            animation: pulseHalo 4.8s ease-in-out infinite;
+        }
+
+        .card {
+            position: relative;
+            width: min(86vw, 780px);
+            aspect-ratio: 4 / 5;
+            border-radius: 32px;
+            background: linear-gradient(145deg, rgba(255,248,243,0.16), rgba(255,248,243,0.04));
+            border: 1px solid rgba(255,255,255,0.14);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 35px 90px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255,255,255,0.16);
+            overflow: hidden;
+            transform: rotateX(8deg) rotateY(-6deg);
+            animation: floatCard 4.3s ease-in-out infinite;
+        }
+
+        .card::before,
+        .card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .card::before {
+            background: linear-gradient(120deg, transparent 25%, rgba(255,255,255,0.12) 40%, transparent 55%);
+            transform: translateX(-120%);
+            animation: shine 5.2s linear infinite;
+        }
+
+        .card::after {
+            background-image: radial-gradient(circle, rgba(255, 77, 109, 0.24) 1px, transparent 1px);
+            background-size: 28px 28px;
+            opacity: 0.35;
+            mix-blend-mode: screen;
+        }
+
+        .envelope-top,
+        .envelope-bottom {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, #8b002d, #4b0016);
+            z-index: 1;
+        }
+
+        .envelope-top {
+            top: 0;
+            height: 42%;
+            clip-path: polygon(0 100%, 50% 0, 100% 100%);
+            box-shadow: inset 0 -10px 16px rgba(0,0,0,0.25);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .envelope-bottom {
+            bottom: 0;
+            height: 58%;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            box-shadow: inset 0 18px 34px rgba(0,0,0,0.2);
+        }
+
+        .letter {
+            position: absolute;
+            inset: 16% 10% 12%;
+            background: linear-gradient(180deg, rgba(255,250,247,0.98), rgba(255,244,240,0.96));
+            border-radius: 22px;
+            color: var(--ink);
+            padding: 26px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+            z-index: 2;
+            transform: translateY(0);
+            opacity: 0.98;
+            transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.8s ease;
+        }
+
+        .card.opening .envelope-top {
+            transform: rotateX(180deg) translateY(-12%);
+        }
+
+        .card.opening .envelope-bottom {
+            transform: translateY(12px) scale(0.985);
+        }
+
+        .card.opening .letter {
+            transform: translateY(-10px) scale(0.995);
+            opacity: 0.94;
+        }
+
+        .card.opened {
+            animation: none;
+        }
+
+        .card.opened .envelope-top {
+            transform: rotateX(180deg) translateY(-12%);
+        }
+
+        .card.opened .envelope-bottom {
+            transform: translateY(12px) scale(0.985);
+        }
+
+        .card.opened .letter {
+            transform: translateY(-10px) scale(1.01);
+            opacity: 1;
+        }
+
+        .card.closing .envelope-top,
+        .card.closing .envelope-bottom,
+        .card.closing .letter {
+            transition: transform 0.55s ease, opacity 0.55s ease;
+        }
+
+        .card.closing .envelope-top {
+            transform: rotateX(0deg) translateY(0);
+        }
+
+        .card.closing .envelope-bottom {
+            transform: translateY(0) scale(1);
+        }
+
+        .card.closing .letter {
+            transform: translateY(0) scale(1);
+            opacity: 0.98;
+        }
+
+        .letter h1 {
+            margin: 0 0 10px;
+            font-size: clamp(1.6rem, 2.3vw, 2.25rem);
+            color: var(--rose-deep);
+            letter-spacing: 0.06em;
+            font-weight: 700;
+        }
+
+        .letter p {
+            margin: 6px 0;
+            font-size: clamp(0.95rem, 1.18vw, 1.08rem);
+            line-height: 1.7;
+            max-width: 460px;
+            color: #5f2b3d;
+        }
+
+        .red-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 3px solid rgba(255,255,255,0.75);
+            background: radial-gradient(circle at 30% 30%, #ff8a8a, var(--rose) 58%, var(--rose-deep));
+            box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.6), 0 0 30px rgba(255, 77, 109, 0.45);
+            cursor: pointer;
+            z-index: 4;
+            transition: transform 0.5s ease, opacity 0.5s ease, box-shadow 0.3s ease;
+            animation: pulseButton 1.6s ease-in-out infinite;
+        }
+
+        .red-circle:hover {
+            box-shadow: 0 0 0 8px rgba(255, 77, 109, 0.12), 0 0 32px rgba(255, 77, 109, 0.6);
+        }
+
+        .red-circle.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.4);
+        }
+
+        .spark-layer {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .spark,
+        .heart {
+            position: absolute;
+            opacity: 0;
+            animation: driftUp 2.6s ease-out forwards;
+            pointer-events: none;
+        }
+
+        .spark {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gold);
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .heart {
+            font-size: 18px;
+            color: rgba(255, 77, 109, 0.95);
+            filter: drop-shadow(0 0 7px rgba(255,77,109,0.4));
+        }
+
+        .message-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            background: rgba(4, 2, 6, 0.86);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.55s ease, visibility 0.55s ease;
+            z-index: 8;
+        }
+
+        .message-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .message-box {
+            color: var(--cream);
+            width: min(92vw, 860px);
+            max-height: 88vh;
+            overflow-y: auto;
+            text-align: center;
+            font-size: 17px;
+            line-height: 1.75;
+            white-space: pre-line;
+            padding: 32px 34px;
+            border-radius: 24px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.11), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255,255,255,0.16);
+            box-shadow: 0 22px 70px rgba(0,0,0,0.34);
+            animation: fadeInUp 0.75s ease;
+        }
+
+        .tiny {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        @keyframes pulseButton {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) s cale(1.06); }
+        }
+
+        @keyframes pulseHalo {
+            0%, 100% { transform: scale(0.96); opacity: 0.85; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: rotateX(7deg) rotateY(-6deg) translateY(0); }
+            50% { transform: rotateX(7deg) rotateY(-6deg) translateY(-10px); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-140%); }
+            100% { transform: translateX(140%); }
+        }
+
+        @keyframes drift {
+            from { transform: translate3d(0,0,0); }
+            to { transform: translate3d(-80px, -120px, 0); }
+        }
+
+        @keyframes driftUp {
+            0% { opacity: 0; transform: translateY(0) scale(0.5); }
+            20% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-220px) scale(1.2); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <div class="halo"></div>
+        <div class="card" id="card">
+            <div class="envelope-top"></div>
+            <div class="envelope-bottom"></div>
+            <div class="letter">
+                <h1>Happy Birthday!</h1>
+                <br>
+                <br>
+                <br>
+                <p>For someone who deserves softness, hope, and a little bit of magic.</p>
+                <p class="tiny">Tap the glowing heart and let the message open.</p>
+            </div>
+            <button class="red-circle" id="red" type="button" aria-label="Open birthday message"></button>
+            <div class="spark-layer" id="sparkLayer"></div>
+        </div>
+    </div>
+
+    <div class="message-overlay" id="messageOverlay">
+        <div class="message-box">
+Hi Tyrese, Happy Birthday!
+
+I know things have been heavy, and I know I may not have handled everything the way I should have. But if there is one thing I want you to know today, it is this: I still care deeply, and I still think about you more than I ever want to admit.
+
+There were moments when I let fear and pride get in the way, and I know that hurt you. I know I made mistakes, and I know I may have caused pain that I can’t undo. I’m not writing this to ask for anything, and I’m not asking you to forgive me right away. I just want you to know that I understand more now than I did before, and I’m truly sorry for the ways I failed you.
+
+I’ve had to learn that love is not always easy. Sometimes it is messy, painful, and confusing. Sometimes it leaves marks that take time to heal. But even through all of that, I never stopped feeling something real for you. I still do.
+
+You have always meant a lot to me, and I hope you know that even if we are distant now, my heart still carries a lot of love for you. I hope you are okay, even if you are carrying things quietly. I hope the people around you are kind to you, and I hope you are finding peace in your own way.
+
+If there is one wish I could give you today, it would be this: may your birthday bring you comfort, clarity, and a little light in the middle of everything you’ve been carrying. May you keep growing into the beautiful person you are, and may the future be gentler to you than the past has been.
+
+Happy Birthday, Gwen. I’m still thinking of you, and I’m still wishing you all the love you deserve. 💖
+        </div>
+    </div>
+
+    <script>
+        const circle = document.getElementById('red');
+        const overlay = document.getElementById('messageOverlay');
+        const sparkLayer = document.getElementById('sparkLayer');
+        const card = document.getElementById('card');
+        const messageBox = overlay.querySelector('.message-box');
+
+        function createBurst(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('span');
+                particle.className = i % 3 === 0 ? 'heart' : 'spark';
+                particle.textContent = i % 3 === 0 ? '♥' : '';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.setProperty('--drift-x', (Math.random() - 0.5) * 240 + 'px');
+                particle.style.setProperty('--drift-y', (Math.random() - 0.8) * 220 + 'px');
+                sparkLayer.appendChild(particle);
+                setTimeout(() => particle.remove(), 2600);
+            }
+        }
+
+        function sprinkle() {
+            for (let i = 0; i < 45; i++) {
+                const sparkle = document.createElement('span');
+                sparkle.className = 'spark';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 1.8 + 's';
+                sparkLayer.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 2600);
+            }
+        }
+
+        function closeLetter() {
+            if (!card.classList.contains('opened')) return;
+
+            overlay.classList.remove('show');
+            card.classList.remove('opened');
+            card.classList.add('closing');
+            circle.classList.remove('hidden');
+            card.style.transform = '';
+
+            setTimeout(() => {
+                card.classList.remove('closing');
+                card.classList.remove('opening');
+            }, 550);
+        }
+
+        circle.addEventListener('click', function (event) {
+            event.stopPropagation();
+
+            if (card.classList.contains('opened')) return;
+
+            createBurst(50, 50);
+            circle.classList.add('hidden');
+            card.classList.remove('closing');
+            card.classList.remove('opened');
+            card.classList.add('opening');
+            overlay.classList.remove('show');
+
+            setTimeout(() => {
+                card.classList.remove('opening');
+                card.classList.add('opened');
+                overlay.classList.add('show');
+                card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1.01)';
+            }, 750);
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!card.classList.contains('opened')) return;
+
+            const clickedInsideOverlay = overlay.contains(event.target);
+            const clickedInsideCard = card.contains(event.target);
+
+            if (!clickedInsideOverlay && !clickedInsideCard) {
+                closeLetter();
+            }
+        });
+
+        messageBox.addEventListener('click', function (event) {
+            event.stopPropagation();
+        });
+
+        setInterval(sprinkle, 1400);
+        sprinkle();
+    </script>
+</body>
+</html>
